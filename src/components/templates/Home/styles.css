@@ -1,0 +1,13 @@
+.container {
+  min-height: 100vh;
+  background-color: rgb(224, 188, 188);
+  padding: 30px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+.button-container {
+  min-height: 100px;
+  display:flex;
+  align-items:flex-end;
+}
+
