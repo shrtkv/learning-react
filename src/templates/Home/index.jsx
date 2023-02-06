@@ -4,7 +4,7 @@ import { Posts } from '../../components/Posts/index';
 import { loadPosts } from '../../utils/load-posts'
 import { Button } from '../../components/Button/index';
 import { SearchInput } from '../../components/SearchInput';
-
+import {Counter} from '../../utils/counter'
 export class Home extends Component {
   state = {
     posts: [],
@@ -14,47 +14,48 @@ export class Home extends Component {
     searchValue:''
   };
 
-  async componentDidMount() {
-    await this.loadPosts();
-  }
-  loadPosts = async () => {
-    const { page,postsPerPage } = this.state;
+async componentDidMount() {
+  await this.loadPosts();
+}
 
-    const postsAndPhotos = await loadPosts();
-    this.setState({
-      posts: postsAndPhotos.slice(page,postsPerPage),
-      allPosts: postsAndPhotos
-    });
+loadPosts = async () => {
+  const { page, postsPerPage } = this.state;
+  const postsAndPhotos = await loadPosts();
+  this.setState({
+    posts: postsAndPhotos.slice(page,postsPerPage),
+    allPosts: postsAndPhotos
+  });
+}
+
+loadMorePosts = () => {
+  const {page, postsPerPage, allPosts, posts} = this.state;
+  const nextPage = page + postsPerPage;
+  const nextPosts = allPosts.slice(nextPage, nextPage + postsPerPage);
+  posts.push(...nextPosts);
+
+  this.setState({posts, page: nextPage});
+  console.log(this.setState)
+}
+
+handleChange = (e) => {
+    const {value} = e.target; 
+    this.setState({ searchValue: value });
   }
 
-  loadMorePosts = () => {
-    const {page, postsPerPage, allPosts, posts} = this.state;
-    const nextPage = page + postsPerPage;
-    const nextPosts = allPosts.slice(nextPage, nextPage + postsPerPage);
-    posts.push(...nextPosts);
-
-    this.setState({posts, page: nextPage});
-    console.log(this.setState)
-  }
-  handleChange = (e) => {
-      const {value} = e.target; 
-      this.setState({ searchValue: value });
-    }
-  render() {
-    const { posts, page, postsPerPage, allPosts, searchValue } = this.state;
-    const noMorePosts = page + postsPerPage >= allPosts.length;
-    const filteredPosts = !!searchValue ? 
+render() {
+  const { posts, page, postsPerPage, allPosts, searchValue } = this.state;
+  const noMorePosts = page + postsPerPage >= allPosts.length;
+  const filteredPosts = !!searchValue ? 
     allPosts.filter(post => {
-        return post.title.toUpperCase().includes(searchValue.toLocaleUpperCase());
-      }) : posts;
-    
-  
+      return post.title.toUpperCase().includes(searchValue.toUpperCase());
+    }) : posts;
+
   return (
     <section className="container">
       {!!searchValue && (
       <><h1>Search value: {searchValue}</h1><br/></>
       )}
-  
+     <Counter/><br/>
       <SearchInput searchValue={searchValue} handleChange={this.handleChange}/>
       <br/><br/>
       {filteredPosts.length > 0 && (<Posts posts={filteredPosts}/>)}

@@ -10,7 +10,7 @@ export const Posts = ({posts}) => {
               id={post.id}
               img={post.img}
               title={post.title}
-              body={post.title}
+              body={post.body}
               cover={post.cover} 
               />
             )
